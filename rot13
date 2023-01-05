@@ -1,0 +1,91 @@
+#!/usr/bin/python
+import sys
+
+OFFSET = 13
+
+def char_pos(char):
+    if not char.isalpha():
+        return -1
+
+    if char.isupper():
+        return ord(char) - 65
+
+    elif char.islower():
+        return ord(char) - 97
+
+def char_encode(char):
+    if not char.isalpha():
+        return char
+
+    if char.isupper():
+        if ord(char) + OFFSET > 90:
+            offset = ord(char) + OFFSET - 90 - 1
+            return chr(ord('A') + offset)
+        else:
+            return chr(ord(char) + OFFSET)
+
+    elif char.islower():
+        if ord(char) + OFFSET > 122:
+            offset = ord(char) + OFFSET - 122 - 1
+            return chr(ord('a') + offset)
+        else:
+            return chr(ord(char) + OFFSET)
+
+def char_decode(char):
+    if not char.isalpha():
+        return char
+
+    if char.isupper():
+        if ord(char) - OFFSET < 65:
+            remains = 65 - (ord(char) - OFFSET)
+            return chr(ord('Z') - remains)
+        else:
+            return chr(ord(char) - OFFSET)
+
+    elif char.islower():
+        if ord(char) - OFFSET < 97:
+            remains = 96 - (ord(char) - OFFSET)
+            return chr(ord('z') - remains)
+        else:
+            return chr(ord(char) - OFFSET)
+
+
+def rot13decode(msg):
+    msg_arr = list()
+    for char in msg:
+        msg_arr.append(char_encode(char))
+    return "".join(msg_arr)
+
+def rot13encode(msg):
+    msg_arr = list()
+    for char in msg:
+        msg_arr.append(char_encode(char))
+    
+    return "".join(msg_arr)
+
+def concat(args):
+    text = ""
+    for i in range(2, len(args)):
+        text += args[i]
+
+    return text
+
+def print_usage(progname):
+    print(f"Usage: {progname} --encode/decode message")
+
+
+concat(sys.argv)
+if len(sys.argv) < 3:
+    print_usage(sys.argv[0])
+    exit(1)
+    
+if sys.argv[1] == "--decode":
+    print(f"{rot13decode(concat(sys.argv))}")
+    
+elif sys.argv[1] == "--encode":
+    print(f"{rot13encode(concat(sys.argv))}")
+    
+else:
+    print_usage(sys.argv[0])
+    exit(1)
+
